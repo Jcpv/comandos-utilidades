@@ -1,0 +1,35 @@
+
+ sudo nano /etc/apache2/sites-available/000-default.conf
+ sudo nano /etc/apache2/sites-available/default-ssl.conf
+
+
+ --------------------------------------------
+# Crea un archivo de VirtualHost (si no existe):
+
+ sudo nano /etc/apache2/sites-available/cimsur.unam.mx.conf    
+
+
+ #Contenido
+ <VirtualHost *:80>
+    ServerName cimsur.unam.mx
+    DocumentRoot /var/www/html
+
+    <Directory /var/www/html>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/cimsur_error.log
+    CustomLog ${APACHE_LOG_DIR}/cimsur_access.log combined
+</VirtualHost>
+
+--------------------------------------------
+
+ # Habilita el nuevo sitio y recarga Apache:
+sudo a2ensite cimsur.unam.mx.conf
+sudo systemctl reload apache2
+
+
+
+
+

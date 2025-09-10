@@ -1,0 +1,42 @@
+
+# Script Bash para Mac – Agregar entrada al /etc/hosts
+
+#!/bin/bash
+--------------------------------------------
+# Dirección IP y dominio a agregar
+IP="139.29.282.1"
+DOMAIN="misitio.com.mx"
+ENTRY="$IP $DOMAIN"
+
+# Verificar si ya existe la entrada
+if grep -q "$DOMAIN" /etc/hosts; then
+    echo "La entrada ya existe en /etc/hosts:"
+    grep "$DOMAIN" /etc/hosts
+else
+    echo "Agregando entrada al archivo /etc/hosts..."
+    echo "$ENTRY" | sudo tee -a /etc/hosts > /dev/null
+    echo "Entrada agregada: $ENTRY"
+
+    # Limpiar caché de DNS
+    echo "Limpiando caché de DNS..."
+    sudo dscacheutil -flushcache
+    sudo killall -HUP mDNSResponder
+    echo "Caché de DNS limpiado."
+fi
+
+
+
+#   Cómo usarlo:
+
+#   1. Copia el script en un archivo, por ejemplo:
+#   nano agregar-host.sh
+
+#   2. Pega el script, guarda con Control + O, luego Enter, y sal con Control + X.
+
+#   3. Hazlo ejecutable:
+#   chmod +x agregar-host.sh
+
+#   4. Ejecuta el script:
+#   ./agregar-host.sh
+
+# El sistema te pedirá la contraseña de administrador para usar sudo.
