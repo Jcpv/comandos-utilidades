@@ -1,6 +1,5 @@
 
 
-
 ✅ Paso 1: Respaldo de la base de datos (PostgreSQL/PostGIS)
 
 docker exec -t db pg_dump -U geonode -d geonode > geonode_backup.sql
@@ -20,6 +19,10 @@ Busca el volumen de datos de GeoServer. Generalmente es algo como /geoserver_dat
 
 --- MEJOR HACER ESTO (La carpeta requerida es - DATA_DIR - )
     docker run --rm -v u_uifs1-geo-gsdatadir:/data -v $(pwd):/backup alpine tar czf /backup/2025_0911_1415_geoserver_data_dir.tar.gz -C /data .
+
+    - O PUEDE SER CON ESTE
+    docker cp geoserver4u_uifs1-geo:/geoserver_data/data ./data_dir_backup
+
 
 --EN MI CONTENEDOR
 docker cp geoserver4u_uifs1-geo:/geoserver_data 2025_0905_1107_geoserver_data
@@ -89,27 +92,15 @@ cp .env ./backup/
 
 
 ************************************************************************************************
-****** RESTAURAR EN DOCKER
-
-sudo chmod -R u+rw ./2025_0912_1230_django_geonode_statics
-
-docker cp 2025_0912_1230_django_geonode_statics/. django4u_uifs1-geo:/mnt/volumes/statics
-
- cp -r 2025_0912_1230_geoserver_data_dir/* /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
-
-
-
-
-************************************************************************************************
 ************************************************************************************************
 
 
 ✅ Identificación de contenedores
 
 Aquí están los contenedores clave de tu instalación:
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 Servicio	        Nombre del contenedor	Imagen Docker	                                Estado
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 GeoNode (Django)    django4u_uifs1-geo	    geonode/geonode:latest-ubuntu-22.04	            ✅ Up (healthy)
 GeoNode (Celery)	celery4u_uifs1-geo	    geonode/geonode:latest-ubuntu-22.04	            ✅ Up
 GeoServer           geoserver4u_uifs1-geo	geonode/geoserver:2.24.3-latest	                🔁 Restarting (hay que revisar)
@@ -119,11 +110,7 @@ nginx	            nginx4u_uifs1-geo	    geonode/nginx:1.25.3-latest	            
 RabbitMQ	        rabbitmq4u_uifs1-geo	rabbitmq:3-alpine	                            ✅ Up
 Memcached	        memcached4u_uifs1-geo	memcached:alpine	                            ✅ Up
 Let's Encrypt	    letsencrypt4u_uifs1-geo	geonode/letsencrypt:2.6.0-latest	            🔁 Restarting
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-
-
-
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 
@@ -151,9 +138,6 @@ sudo tar czf 2025_0912_1218_geonode_media.tar.gz -C /var/lib/docker/volumes/u_ui
 
 
 
-
-
-
 #Restaurar base de datos:
 1. Asegúrate de que el nuevo contenedor de PostgreSQL esté corriendo.
 2. Carga el backup
@@ -162,14 +146,12 @@ docker run --rm -v geoserver_data:/data -v $(pwd):/backup alpine \
     tar xzf /backup/geoserver_data_dir.tar.gz -C /data
 
 
-    docker cp 2025_0911_0900_geonode_backup.sql  db4u_uifs1-geo:/2025_0911_0900_geonode_backup.sql
-    docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0911_0900_geonode_backup.sql
+    
+    
 
 
 
-Restaurar el data_dir de GeoServer:
 
-    docker run --rm -v u_uifs1-geo-gsdatadir:/data -v $(pwd):/backup alpine     tar xzf /backup/2025_0911_1415_geoserver_data_dir.tar.gz -C /data
 
 
 
@@ -283,3 +265,110 @@ docker inspect <nombre_contenedor> | grep Source
 
 ****************************************************************************************
 ****************************************************************************************
+
+
+
+
+
+
+
+
+
+
+*********************************************************************************************
+        RESTAURAR DATOS DE CONTENEDORES DOCKER
+**********************************************************************************************
+
+✅ Identificación de contenedores
+
+Aquí están los contenedores clave de tu instalación:
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Servicio	        Nombre del contenedor	Imagen Docker	                                Estado
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+GeoNode (Django)    django4u_uifs1-geo	    geonode/geonode:latest-ubuntu-22.04	            ✅ Up (healthy)
+GeoNode (Celery)	celery4u_uifs1-geo	    geonode/geonode:latest-ubuntu-22.04	            ✅ Up
+GeoServer           geoserver4u_uifs1-geo	geonode/geoserver:2.24.3-latest	                🔁 Restarting (hay que revisar)
+GeoServer Config	gsconf4u_uifs1-geo	    geonode/geoserver_data:2.24.3-latest	        ✅ Up (healthy)
+Base de datos	    db4u_uifs1-geo	        geonode/postgis:15.3-latest	                    ✅ Up (healthy)
+nginx	            nginx4u_uifs1-geo	    geonode/nginx:1.25.3-latest	                    ✅ Up
+RabbitMQ	        rabbitmq4u_uifs1-geo	rabbitmq:3-alpine	                            ✅ Up
+Memcached	        memcached4u_uifs1-geo	memcached:alpine	                            ✅ Up
+Let's Encrypt	    letsencrypt4u_uifs1-geo	geonode/letsencrypt:2.6.0-latest	            🔁 Restarting
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# 1 Enviar datos respaldados a los contenedores
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+a => opcional
+    sudo chmod -R u+rw ./2025_0912_1230_django_geonode_statics
+ 
+b => docker cp 2025_0912_1230_django_geonode_statics/. django4u_uifs1-geo:/mnt/volumes/statics
+
+c => cp -r 2025_0912_1230_geoserver_data_dir/* /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
+
+    ó 
+    docker cp data_dir_backup/. geoserver4u_uifs1-geo:/geoserver_data/data
+
+
+/var/lib/docker/volumes/ geoserver4u_uifs1-geo
+
+# 2 Restaurar base de datos:
+a => Asegúrate de que el nuevo contenedor de PostgreSQL esté corriendo.
+    con [docker ps -a] ver el contendor de base de datos por ejemplo: db4u_uifs1-geo
+
+b => Eliminar la base de datos actual
+    ✅ Entrar al contenedor de BD
+     docker exec  -it db4u_uifs1-geo bash
+
+    ✅ Entrar a postgres
+     psql -U postgres
+
+    ✅ paso 1: Finalizar conexiones activas desde PostgreSQL
+        SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'geonode_data'   AND pid <> pg_backend_pid();
+    
+    ✅ Paso 2: Revocar los privilegios de los roles
+     REVOKE ALL PRIVILEGES ON SCHEMA public FROM geonode;
+     REVOKE ALL PRIVILEGES ON SCHEMA public FROM geonode_data;
+
+    ✅ Paso 3: Eliminar las BD
+     DROP DATABASE geonode;
+     DROP DATABASE geonode_data;
+
+    ✅ Paso 4: Eliminar los roles
+     DROP ROLE geonode;
+     DROP ROLE geonode_data;
+
+
+c => Cargar y aplicar el backup
+    ✅ Copiar Backup al contenedor
+    docker cp 2025_0911_0900_geonode_backup.sql  db4u_uifs1-geo:/2025_0911_0900_geonode_backup.sql
+
+    ✅ Cargar datos de backup a la base de datos del contenedor
+    docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0911_0900_geonode_backup.sql
+
+
+# 3. Verifica conectividad desde GeoNode:
+    docker compose exec django sh
+    python manage.py showmigrations
+
+    - Sincronizar capas (por si acaso)
+     python manage.py updatelayers
+     python manage.py rebuild_index
+
+
+#4 Restaurar el data_dir de GeoServer:
+
+    docker run --rm -v u_uifs1-geo-gsdatadir:/data -v $(pwd):/backup alpine   tar xzf /backup/2025_0911_1415_geoserver_data_dir.tar.gz -C /data
+ 
+
+
+
+
+
+
+
+
+
+
