@@ -194,6 +194,7 @@ c => Cargar y aplicar el backup
     ✅ Cargar datos de backup a la base de datos del contenedor
     docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0911_0900_geonode_backup.sql
     docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0905_1107_geonode_data_backup.sql
+    docker exec -it db4u_uifs1-geo psql -U postgres -d geonode_data -f /2025_0905_1107_geonode_data_backup.sql
 
 
 # 3. Verifica conectividad desde GeoNode:
@@ -209,6 +210,15 @@ c => Cargar y aplicar el backup
         - Reconstruye los índices de búsqueda internamente (según el backend configurado).
     - Se puede hacer desde el host con el comando
     docker exec -it django4u_uifs1-geo python manage.py updatelayers
+
+6. 🚀 Reinicia servicios Django y GeoServer
+    - Después de restaurar las bases de datos, reinicia:
+    docker restart django4u_uifs1-geo
+    docker restart geoserver4u_uifs1-geo
+
+    - Y luego reindexa con:
+    docker exec -it django4u_uifs1-geo bash
+    python manage.py updatelayers
 
 
 
