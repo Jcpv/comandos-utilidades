@@ -153,10 +153,16 @@ b => sudo cp -r 2025_0912_1230_geoserver_data_dir/* /var/lib/docker/volumes/u_ui
 
     -- ó --    
     sudo chmod -R u+rw ./2025_0912_1230_geoserver_data_dir_2
-    docker cp ./2025_0912_1230_geoserver_data_dir_2/. geoserver4u_uifs1-geo:/var/geoserver_data/
+    docker cp  geoserver4u_uifs1-geo:/var/geoserver_data/
+    docker cp geoserver4u_uifs1-geo:/geoserver_data/data ./2025_1009_1400_geoserver_data_dir_ok
+    docker cp ./2025_0912_1230_geoserver_data_dir_2/. geoserver4u_uifs1-geo:/geoserver_data 
+
+    - Esto es para ver la carpeta en donde se copian los datos
+    sudo ls /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
 
 
-/var/lib/docker/volumes/ geoserver4u_uifs1-geo
+sudo ls -oh /var/lib/docker/volumes/u_uifs1-geo-statics/_data
+sudo ls -oh /var/lib/docker/volumes/u_uifs1-geo-gsdatadir
 
 # 2 Restaurar base de datos:
 a => Asegúrate de que el nuevo contenedor de PostgreSQL esté corriendo.
@@ -193,9 +199,21 @@ c => Cargar y aplicar el backup
 
     ✅ Cargar datos de backup a la base de datos del contenedor
     docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0911_0900_geonode_backup.sql
-    docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0905_1107_geonode_data_backup.sql
+    // docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0905_1107_geonode_data_backup.sql
     docker exec -it db4u_uifs1-geo psql -U postgres -d geonode_data -f /2025_0905_1107_geonode_data_backup.sql
 
+    ✅ Comandos de apoyo
+    - Conocer las bases de datos de Postgres
+    SELECT datname FROM pg_database;
+    - Conocer los usuarios registrados
+    SELECT id, username, email FROM auth_user;
+    - Comando para listar todas las bases de datos disponibles en el contenedor:
+    docker exec -it db4u_uifs1-geo psql -U postgres -c '\l'
+    - Crear la base de datos =geonode_data=
+    docker exec -it db4u_uifs1-geo psql -U postgres -c "CREATE DATABASE geonode_data OWNER geonode;"
+    docker exec -it db4u_uifs1-geo psql -U postgres -c "CREATE ROLE geonode_data;"
+    docker exec -it db4u_uifs1-geo psql -U postgres -c "CREATE ROLE geonode_data LOGIN;"
+    docker exec -it db4u_uifs1-geo psql -U postgres -c "CREATE DATABASE geonode_data OWNER geonode_data;" (ESTE FUNCIONA)
 
 # 3. Verifica conectividad desde GeoNode:
     docker exec -it django4u_uifs1-geo sh
@@ -225,13 +243,55 @@ c => Cargar y aplicar el backup
 #4 Restaurar el data_dir de GeoServer: // al hacer esto se truena el GEOSERVER
 
     docker run --rm -v u_uifs1-geo-gsdatadir:/data -v $(pwd):/backup alpine   tar xzf /backup/2025_0911_1415_geoserver_data_dir.tar.gz -C /data
- 
+
+
+# otras cosas a realizar 
+
+## Crear migraciones nuevas para reflejar los modelos actuales:
+docker exec -it django4u_uifs1-geo python manage.py makemigrations
+
+## Aplicar esas migraciones:
+docker exec -it django4u_uifs1-geo python manage.py migrate
+
+## Actualizar los LINK del server anterior
+docker exec -it django4u_uifs1-geo python manage.py migrate_baseurl --source-address=http://186.96.43.8:8087 --target-address=http://localhost:8087
 
 
 
 
- --- C U I D A D O - ELIMINA VOLUMENES ---
+
+# Conocer la Version de GEONODE
+- Opción 1 - 
+    docker exec -it django4u_uifs1-geo bash
+    python3 -m pip show geonode
+
+- Opción 2 - desde el contenedor
+    docker exec -it django4u_uifs1-geo bash
+    python3 manage.py shell
+    import geonode
+    print(geonode.__version__)
+
+- Opción 3 - en la carpeta de instalación
+    cat requirements.txt | grep geonode
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+--------   C U I D A D O - ELIMINA VOLUMENES --- ----- ----- ----- ---- ---- ------
+-----------------------------------------------------------------------------------
 docker volume rm  u_uifs1-geo-backup-restore u_uifs1-geo-data u_uifs1-geo-dbbackups u_uifs1-geo-dbdata u_uifs1-geo-gsdatadir u_uifs1-geo-nginxcerts u_uifs1-geo-nginxconfd u_uifs1-geo-rabbitmq u_uifs1-geo-statics u_uifs1-geo-tmp
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 
 
 
