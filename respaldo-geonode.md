@@ -160,6 +160,10 @@ b => sudo cp -r 2025_0912_1230_geoserver_data_dir/* /var/lib/docker/volumes/u_ui
     - Esto es para ver la carpeta en donde se copian los datos
     sudo ls /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
 
+    --- ESTE SI COPIA TODO
+docker cp ./2025_0912_1230_geoserver_data_dir_2/. geoserver4u_uifs1-geo:/geoserver_data 
+
+
 
 sudo ls -oh /var/lib/docker/volumes/u_uifs1-geo-statics/_data
 sudo ls -oh /var/lib/docker/volumes/u_uifs1-geo-gsdatadir
