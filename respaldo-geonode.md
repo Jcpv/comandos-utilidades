@@ -157,11 +157,26 @@ b => sudo cp -r 2025_0912_1230_geoserver_data_dir/* /var/lib/docker/volumes/u_ui
     docker cp geoserver4u_uifs1-geo:/geoserver_data/data ./2025_1009_1400_geoserver_data_dir_ok
     docker cp ./2025_0912_1230_geoserver_data_dir_2/. geoserver4u_uifs1-geo:/geoserver_data 
 
-    - Esto es para ver la carpeta en donde se copian los datos
+    - Esto es para ver la carpeta en donde se copian los datos de GEOSERVER
     sudo ls /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
 
     --- ESTE SI COPIA TODO
-docker cp ./2025_0912_1230_geoserver_data_dir_2/. geoserver4u_uifs1-geo:/geoserver_data 
+    docker cp ./2025_0912_1230_geoserver_data_dir_2/. geoserver4u_uifs1-geo:/geoserver_data
+    docker cp ./2025_1009_1400_geoserver_data_dir_LOCALHOST_ok/. geoserver4u_uifs1-geo:/geoserver_data 
+
+    // PARA RESTAURAR EL CONTENIDO DE LA CARPETA
+    CARPERA DIRECTA EN EL HOST
+        var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
+    
+    carpetas que copie para restaurar
+    sudo cp -r 2025_1009_1400_geoserver_data_dir_LOCALHOST_ok/. /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
+    sudo cp -r 2025_0912_1230_geoserver_data_dir/data/gwc /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
+    sudo cp -r 2025_0912_1230_geoserver_data_dir/data/gwc-layers /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
+    sudo cp -r 2025_0912_1230_geoserver_data_dir/data/legendsamples /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
+    sudo cp -r 2025_0912_1230_geoserver_data_dir/data/logs /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
+    sudo cp -r 2025_0912_1230_geoserver_data_dir/data/workspaces /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
+
+    docker restart geoserver4u_uifs1-geo
 
 
 
