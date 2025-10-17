@@ -106,18 +106,18 @@
 	cp /home/uifsA/ssl/* /var/lib/docker/volumes/geo-atlas-nginxcerts/_data/my_geonode
 	
 	RUTA para GeoNode-UIFS
-	sudo ls /var/lib/docker/volumes/u_uifs1-geo-nginxcerts/_data/uifs_geo
-
+	sudo ls /var/lib/docker/volumes/u_uifs1-geo-nginxcerts/_data
+	sudo mkdir /var/lib/docker/volumes/u_uifs1-geo-nginxcerts/_data/uifs_geo
+	sudo cp -r ../../ssl_2025  /var/lib/docker/volumes/u_uifs1-geo-nginxcerts/_data/uifs_geo
 
 *** Entrar al contenedor NGINX 
 	docker-compose exec geonode sh
 	docker exec -it nginx4 sh
 	docker exec -it nginx4u_uifs1-geo sh
 
-
-
 *** ACTUALIZAR archivo CONF de NGINX
 	vim nginx.https.enabled.conf
+		nginx.https.available.conf // es el mismo que en anterior
 
 
 	server {
