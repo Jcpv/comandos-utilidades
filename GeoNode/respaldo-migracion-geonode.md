@@ -145,17 +145,16 @@ docker exec -it django4u_uifs1-geo find / -name "*.shp"
 ( opcional )
     sudo chmod -R u+rw ./2025_0912_1230_django_geonode_statics
  
-a => docker cp 2025_0912_1230_django_geonode_statics/. django4u_uifs1-geo:/mnt/volumes/statics
+a => docker cp 2025_0912_1230_django_geonode_statics/. django4u_uifs1-geo:/mnt/volumes/statics   
     -- ó --
-    docker cp 2025_0912_1230_django_geonode_statics/uploaded/. django4u_uifs1-geo:/mnt/volumes/statics/uploaded
+    docker cp 2025_0912_1230_django_geonode_statics/uploaded/. django4u_uifs1-geo:/mnt/volumes/statics/uploaded     -- Ok --
 
 b => sudo cp -r 2025_0912_1230_geoserver_data_dir/* /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
 
     -- ó --    
     sudo chmod -R u+rw ./2025_0912_1230_geoserver_data_dir_2
-    docker cp  geoserver4u_uifs1-geo:/var/geoserver_data/
-    docker cp geoserver4u_uifs1-geo:/geoserver_data/data ./2025_1009_1400_geoserver_data_dir_ok
-    docker cp ./2025_0912_1230_geoserver_data_dir_2/. geoserver4u_uifs1-geo:/geoserver_data 
+    docker cp geoserver4u_uifs1-geo:/geoserver_data/data ./2025_1009_1400_geoserver_data_dir_ok     -- Ok -- (esto es para copiar un respaldo del DOcker actual)
+    docker cp ./2025_0912_1230_geoserver_data_dir_2/. geoserver4u_uifs1-geo:/geoserver_data         -- Ok --
 
     - Esto es para ver la carpeta en donde se copian los datos de GEOSERVER
     sudo ls /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
@@ -187,7 +186,7 @@ sudo ls -oh /var/lib/docker/volumes/u_uifs1-geo-gsdatadir
 a => Asegúrate de que el nuevo contenedor de PostgreSQL esté corriendo.
     con [docker ps -a] ver el contendor de base de datos por ejemplo: db4u_uifs1-geo
 
-b => Eliminar la base de datos actual
+b => Eliminar la base de datos actual           -- Ok --
     ✅ Entrar al contenedor de BD
      docker exec  -it db4u_uifs1-geo bash
 
@@ -213,13 +212,13 @@ b => Eliminar la base de datos actual
 
 c => Cargar y aplicar el backup
     ✅ Copiar Backup al contenedor
-    - docker cp 2025_0911_0900_geonode_backup.sql  db4u_uifs1-geo:/2025_0911_0900_geonode_backup.sql
-    - docker cp 2025_0905_1107_geonode_data_backup.sql  db4u_uifs1-geo:/2025_0905_1107_geonode_data_backup.sql
+        docker cp 2025_0911_0900_geonode_backup.sql  db4u_uifs1-geo:/2025_0911_0900_geonode_backup.sql                  -- Ok --
+        docker cp 2025_0905_1107_geonode_data_backup.sql  db4u_uifs1-geo:/2025_0905_1107_geonode_data_backup.sql        -- Ok --
 
     ✅ Cargar datos de backup a la base de datos del contenedor
-    docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0911_0900_geonode_backup.sql
-    // docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0905_1107_geonode_data_backup.sql
-    docker exec -it db4u_uifs1-geo psql -U postgres -d geonode_data -f /2025_0905_1107_geonode_data_backup.sql
+        docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0911_0900_geonode_backup.sql                           -- Ok --
+        // docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0905_1107_geonode_data_backup.sql
+        docker exec -it db4u_uifs1-geo psql -U postgres -d geonode_data -f /2025_0905_1107_geonode_data_backup.sql      -- Ok --
 
     ✅ - - - - - Comandos de apoyo - - - - - 
     - Conocer las bases de datos de Postgres
@@ -246,7 +245,7 @@ c => Cargar y aplicar el backup
         - Actualiza los metadatos en la base de datos de GeoNode.
         - Reconstruye los índices de búsqueda internamente (según el backend configurado).
     - Se puede hacer desde el host con el comando
-    docker exec -it django4u_uifs1-geo python manage.py updatelayers
+        docker exec -it django4u_uifs1-geo python manage.py updatelayers
 
 6. 🚀 Reinicia servicios Django y GeoServer
     - Después de restaurar las bases de datos, reinicia:
@@ -273,8 +272,8 @@ docker exec -it django4u_uifs1-geo python manage.py makemigrations
 docker exec -it django4u_uifs1-geo python manage.py migrate
 
 ## Actualizar los LINK del server anterior
-docker exec -it django4u_uifs1-geo python manage.py migrate_baseurl --source-address=http://186.96.43.8:8087 --target-address=http://localhost:8087
-docker exec -it django4u_uifs1-geo python manage.py migrate_baseurl --source-address=http://186.96.43.8:8080 --target-address=http://localhost:8080
+docker exec -it django4u_uifs1-geo python manage.py migrate_baseurl --source-address=http://186.96.43.8:8087 --target-address=https://uifs.cimsur.unam.mx:8091
+docker exec -it django4u_uifs1-geo python manage.py migrate_baseurl --source-address=http://186.96.43.8:8080 --target-address=https://uifs.cimsur.unam.mx:8080
 docker exec -it django4u_uifs1-geo python manage.py updatelayers
 
 
