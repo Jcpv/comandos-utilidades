@@ -142,7 +142,7 @@
 
 
 *** RECARGAR la configuración de Nginx: 
-		
+		nginx -s reload
 
 
 
