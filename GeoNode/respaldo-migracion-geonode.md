@@ -209,6 +209,19 @@ b => Eliminar la base de datos actual           -- Ok --
      DROP ROLE geonode;
      DROP ROLE geonode_data;
 
+    ✅ Paso 5: Eliminar los Esquemas
+        DROP SCHEMA tiger CASCADE;
+        DROP SCHEMA tiger_data CASCADE;
+        DROP SCHEMA topology CASCADE;
+
+        - ó
+        docker exec -it db4geonode1 psql -U geonode -d geonode -c "DROP SCHEMA tiger CASCADE;"
+        docker exec -it db4geonode1 psql -U geonode -d geonode -c "DROP SCHEMA tiger_data CASCADE;"
+        docker exec -it db4geonode1 psql -U geonode -d geonode -c "DROP SCHEMA topology CASCADE;"
+
+
+
+
 
 c => Cargar y aplicar el backup
     ✅ Copiar Backup al contenedor
@@ -256,11 +269,6 @@ c => Cargar y aplicar el backup
     docker exec -it django4u_uifs1-geo bash
     python manage.py updatelayers
 
-
-
-#4 Restaurar el data_dir de GeoServer: // al hacer esto se truena el GEOSERVER
-
-    docker run --rm -v u_uifs1-geo-gsdatadir:/data -v $(pwd):/backup alpine   tar xzf /backup/2025_0911_1415_geoserver_data_dir.tar.gz -C /data
 
 
 # otras cosas a realizar 
