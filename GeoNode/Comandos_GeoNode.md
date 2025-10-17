@@ -106,7 +106,7 @@
 	cp /home/uifsA/ssl/* /var/lib/docker/volumes/geo-atlas-nginxcerts/_data/my_geonode
 	
 	RUTA para GeoNode-UIFS
-	sudo ls /var/lib/docker/volumes/u_uifs1-geo-nginxcerts/_data/geo_uifs
+	sudo ls /var/lib/docker/volumes/u_uifs1-geo-nginxcerts/_data/uifs_geo
 
 
 *** Entrar al contenedor NGINX 
@@ -128,8 +128,8 @@
 
 	    # ssl_certificate     /certificate_symlink/fullchain.pem;
 	    # ssl_certificate_key /certificate_symlink/privkey.pem;
-	    ssl_certificate /geonode-certificates/geo_uifs/ssl_2025/bundle.crt;
-	    ssl_certificate_key /geonode-certificates/geo_uifs/ssl_2025/cimsurdomain.key;
+	    ssl_certificate /geonode-certificates/uifs_geo/ssl_2025/bundle.crt;
+	    ssl_certificate_key /geonode-certificates/uifs_geo/ssl_2025/cimsurdomain.key;
 
 
 
@@ -142,7 +142,7 @@
 
 
 *** RECARGAR la configuración de Nginx: 
-	nginx -s reload
+		
 
 
 
