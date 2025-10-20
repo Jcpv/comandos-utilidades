@@ -51,16 +51,12 @@ docker exec -t contenedor_postgres pg_dump -U postgres > geonode_backup.sql
     docker cp geonode:/usr/src/app/geonode/uploaded ./backup_uploaded
 
 --EN MI CONTENEDOR
-    docker cp django4u_uifs1-geo:/mnt/volumes/statics/uploaded ./backup_medios_uploaded
 
-##  Toda la carpeta de medios (la que contiene a la carpeta UPLOADED)
+##  Toda la carpeta de medios (la que contiene a la carpeta UPLOADED) - 1 
     docker cp django4u_uifs1-geo:/mnt/volumes/statics 2025_0912_1230_django_geonode_statics
     
     ó
     - cp -r /var/lib/docker/volumes/u_uifs1-geo-statics/_data 2025_0912_1218_geonode_media
-    
-    ó
-    - sudo tar czf 2025_0912_1218_geonode_media.tar.gz -C /var/lib/docker/volumes/u_uifs1-geo-statics/_data .
 
 
 # Respaldo de la configuración y datos de GeoServer
@@ -144,29 +140,37 @@ docker exec -it django4u_uifs1-geo find / -name "*.shp"
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ( opcional )
     sudo chmod -R u+rw ./2025_0912_1230_django_geonode_statics
+
+Otros permisos
+    chmod -R 755 /geoserver_data/data
+    chown -R 1000:1000 /geoserver_data/data
  
-a => docker cp 2025_0912_1230_django_geonode_statics/. django4u_uifs1-geo:/mnt/volumes/statics   
+a => docker cp 2025_0912_1230_django_geonode_statics/. django4u_uifs1-geo:/mnt/volumes/statics   -- Ok --
     -- ó --
-    docker cp 2025_0912_1230_django_geonode_statics/uploaded/. django4u_uifs1-geo:/mnt/volumes/statics/uploaded     -- Ok --
+    docker cp 2025_0912_1230_django_geonode_statics/uploaded/. django4u_uifs1-geo:/mnt/volumes/statics/uploaded     
 
-b => sudo cp -r 2025_0912_1230_geoserver_data_dir/* /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
+b => sudo chmod -R u+rw ./2025_0912_1230_geoserver_data_dir
+docker cp ./2025_0912_1230_geoserver_data_dir/. geoserver4u_uifs1-geo:/geoserver_data         -- Ok -- 
 
-    -- ó --    
-    sudo chmod -R u+rw ./2025_0912_1230_geoserver_data_dir_2
-    docker cp geoserver4u_uifs1-geo:/geoserver_data/data ./2025_1009_1400_geoserver_data_dir_ok     -- Ok -- (esto es para copiar un respaldo del DOcker actual)
-    docker cp ./2025_0912_1230_geoserver_data_dir_2/. geoserver4u_uifs1-geo:/geoserver_data         -- Ok --
+    sudo cp -r 2025_0912_1230_geoserver_data_dir/* /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
 
-    - Esto es para ver la carpeta en donde se copian los datos de GEOSERVER
-    sudo ls /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
-
+    -- para hacer respaldo de misma carpet del HOST --    
+    
+    docker cp geoserver4u_uifs1-geo:/geoserver_data/data ./2025_1009_1400_geoserver_data_dir_ok-HOST     -- Ok -- (esto es para copiar un respaldo del DOcker actual)
+    
+    
     --- ESTE SI COPIA TODO
     docker cp ./2025_0912_1230_geoserver_data_dir_2/. geoserver4u_uifs1-geo:/geoserver_data
     docker cp ./2025_1009_1400_geoserver_data_dir_LOCALHOST_ok/. geoserver4u_uifs1-geo:/geoserver_data 
 
     // PARA RESTAURAR EL CONTENIDO DE LA CARPETA
-    CARPERA DIRECTA EN EL HOST
-        /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
-    
+    CARPERA DIRECTA EN EL HOST - Datos de GEOSERVER
+    sudo ls -oh /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
+
+    CARPERA DIRECTA EN EL HOST - Datos de Statics
+    sudo ls -oh /var/lib/docker/volumes/u_uifs1-geo-statics/_data
+
+
     carpetas que copie para restaurar -- ESTO FUE POR UN ERROR QUE ENCONTRÉ
         sudo cp -r 2025_1009_1400_geoserver_data_dir_LOCALHOST_ok/. /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
         sudo cp -r 2025_0912_1230_geoserver_data_dir/data/gwc /var/lib/docker/volumes/u_uifs1-geo-gsdatadir/_data
@@ -179,8 +183,7 @@ b => sudo cp -r 2025_0912_1230_geoserver_data_dir/* /var/lib/docker/volumes/u_ui
 
 
 
-sudo ls -oh /var/lib/docker/volumes/u_uifs1-geo-statics/_data
-sudo ls -oh /var/lib/docker/volumes/u_uifs1-geo-gsdatadir
+
 
 # 2 Restaurar base de datos:
 a => Asegúrate de que el nuevo contenedor de PostgreSQL esté corriendo.
@@ -209,10 +212,14 @@ b => Eliminar la base de datos actual           -- Ok --
      DROP ROLE geonode;
      DROP ROLE geonode_data;
 
+     DROP ROLE postgres;
+
+     docker exec -it db4u_uifs1-geo psql -U postgres -l
+
     ✅ Paso 5: Eliminar los Esquemas
-        DROP SCHEMA tiger CASCADE;
-        DROP SCHEMA tiger_data CASCADE;
-        DROP SCHEMA topology CASCADE;
+        DROP SCHEMA IF EXISTS tiger CASCADE;
+        DROP SCHEMA IF EXISTS tiger_data CASCADE;
+        DROP SCHEMA IF EXISTS topology CASCADE;
 
         - ó
         docker exec -it db4geonode1 psql -U geonode -d geonode -c "DROP SCHEMA tiger CASCADE;"
@@ -225,12 +232,11 @@ b => Eliminar la base de datos actual           -- Ok --
 
 c => Cargar y aplicar el backup
     ✅ Copiar Backup al contenedor
-        docker cp 2025_0911_0900_geonode_backup.sql  db4u_uifs1-geo:/2025_0911_0900_geonode_backup.sql                  -- Ok --
+        docker cp 2025_0905_1107_geonode_backup.sql  db4u_uifs1-geo:/2025_0911_0900_geonode_backup.sql                  -- Ok --
         docker cp 2025_0905_1107_geonode_data_backup.sql  db4u_uifs1-geo:/2025_0905_1107_geonode_data_backup.sql        -- Ok --
 
     ✅ Cargar datos de backup a la base de datos del contenedor
-        docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0911_0900_geonode_backup.sql                           -- Ok --
-        // docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0905_1107_geonode_data_backup.sql
+        docker exec -it db4u_uifs1-geo psql -U postgres -f /2025_0905_1107_geonode_backup.sql                           -- Ok --
         docker exec -it db4u_uifs1-geo psql -U postgres -d geonode_data -f /2025_0905_1107_geonode_data_backup.sql      -- Ok --
 
     ✅ - - - - - Comandos de apoyo - - - - - 
