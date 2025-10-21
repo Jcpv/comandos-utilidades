@@ -18,117 +18,6 @@ RabbitMQ	        rabbitmq4u_uifs1-geo	rabbitmq:3-alpine	                        
 Memcached	        memcached4u_uifs1-geo	memcached:alpine	                            ✅ Up
 Let's Encrypt	    letsencrypt4u_uifs1-geo	geonode/letsencrypt:2.6.0-latest	            🔁 Restarting
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-
-
-***********************************************************************************************
-* * *  ✅ REALIZAR RESPALDOS
-***********************************************************************************************
-
-✅ Paso 1: Respaldo de la base de datos (PostgreSQL/PostGIS)
-
-# Dump de geonode (metadatos)
-docker exec -t db pg_dump -U geonode -d geonode > geonode_backup.sql
-# Dump de geonode_data (datos espaciales)
-docker exec -t db pg_dump -U geonode_data -d geonode_data > geonode_data_backup.sql
-
-
-docker exec -t contenedor_postgres pg_dump -U postgres > geonode_backup.sql
-
---EN MI CONTENEDOR
-    # Dump de geonode (metadatos)
-    docker exec -t db4u_uifs1-geo pg_dump -U geonode -d geonode > 2025_0911_1415_geonode_backup.sql
-    
-    # Dump de geonode_data (datos espaciales)
-    docker exec -t db4u_uifs1-geo pg_dump -U geonode_data -d geonode_data > 2025_0911_1415_geonode_data_backup.sql
-
-
-
-✅ 2. Respaldar Archivos 
-
-# Archivos de medios - SOLO UPLOADED
-    docker cp geonode:/usr/src/app/geonode/uploaded ./backup_uploaded
-
---EN MI CONTENEDOR
-
-##  Toda la carpeta de medios (la que contiene a la carpeta UPLOADED) - 1 
-    docker cp django4u_uifs1-geo:/mnt/volumes/statics 2025_0912_1230_django_geonode_statics
-    
-    ó
-    - cp -r /var/lib/docker/volumes/u_uifs1-geo-statics/_data 2025_0912_1218_geonode_media
-
-
-# Respaldo de la configuración y datos de GeoServer
- docker run --rm -v u_uifs1-geo-gsdatadir:/data -v $(pwd):/backup alpine tar czf /backup/2025_1008_1158_geoserver_data_dir.tar.gz -C /data .
- 
- - O PUEDE SER CON ESTE
-    docker cp geoserver4u_uifs1-geo:/geoserver_data/data ./2025_1008_1158_geoserver_data_dir
-
-
-# O si se usan otros paths, revisa con:
-docker exec -it django4u_uifs1-geo find / -name "*.shp"
-
-
-✅ Paso 3: Respaldar archivos de configuración (opcional), Si has modificado local_settings.py o templates:
-    docker cp django:/usr/src/app/geonode/local_settings.py ./backup/
-
-    - EN MI CONTENEDOR (NO SE ENCUENTRA EL ARCHIVO INDICADO)
-        docker cp django4u_uifs1-geo:/usr/src/app/geonode/local_settings.py 2025_0905_1107_geonode_config
-
-    - o buscar el archivo con:
-        sudo find /var/lib/docker -name  "*local_settings.py"
-
-
-
-**** LO SIGUIENTE ANALIZAR SI ES PERTINENTE REALIZARLO
-# RESPALDAR VOLUMENES DIRECTAMENTE - Revisa si usas volúmenes de Docker:
-    docker volume ls
-
-    u_uifs1-geo-dbbackups
-    u_uifs1-geo-dbdata
-    u_uifs1-geo-gsdatadir
-    u_uifs1-geo-nginxcerts
-    u_uifs1-geo-nginxconfd
-    u_uifs1-geo-rabbitmq
-    u_uifs1-geo-statics
-    u_uifs1-geo-tmp
-
-
-## Para cada volumen relevante (por ejemplo, de medios o capas):
-
-    docker run --rm  -v u_uifs1-geo-backup-restore:/volume -v $(pwd):/backup alpine tar -czf /backup/202510081301_u_uifs1-geo-backup-restore.tar.gz -C /volume .
-
-    docker run --rm -v u_uifs1-geo-data:/volume -v $(pwd):/backup alpine tar -czf /backup/202510081301_u_uifs1-geo-data.tar.gz -C /volume .
-
-    docker run --rm -v u_uifs1-geo-dbbackups:/volume -v $(pwd):/backup alpine tar -czf /backup/202510081301_u_uifs1-geo-dbbackups.tar.gz -C /volume .
-    
-    - docker run --rm -v u_uifs1-geo-dbdata:/volume -v $(pwd):/backup alpine tar -czf /backup/202510081301_u_uifs1-geo-dbdata.tar.gz -C /volume .
-    
-    docker run --rm -v u_uifs1-geo-gsdatadir:/volume -v $(pwd):/backup alpine tar -czf /backup/202510081301_u_uifs1-geo-gsdatadir.tar.gz -C /volume .
-
-    docker run --rm -v u_uifs1-geo-nginxcerts:/volume -v $(pwd):/backup alpine tar -czf /backup/202510081301_u_uifs1-geo-nginxcerts.tar.gz -C /volume .
-
-    docker run --rm -v u_uifs1-geo-nginxconfd:/volume -v $(pwd):/backup alpine tar -czf /backup/202510081301_u_uifs1-geo-nginxconfd.tar.gz -C /volume .
-
-    docker run --rm -v u_uifs1-geo-rabbitmq:/volume -v $(pwd):/backup alpine tar -czf /backup/202510081301_u_uifs1-geo-rabbitmq.tar.gz -C /volume .
-
-    docker run --rm -v u_uifs1-geo-statics:/volume -v $(pwd):/backup alpine tar -czf /backup/202510081301_u_uifs1-geo-statics.tar.gz -C /volume .
-
-    docker run --rm -v u_uifs1-geo-tmp:/volume -v $(pwd):/backup alpine tar -czf /backup/202510081301_u_uifs1-geo-tmp.tar.gz -C /volume .
-
-
-
-
-
-
-
-
-
-
-
-
-
  
 
 ***********************************************************************************************
@@ -183,8 +72,6 @@ docker cp ./2025_0912_1230_geoserver_data_dir/. geoserver4u_uifs1-geo:/geoserver
 
 
 
-
-
 # 2 Restaurar base de datos:
 a => Asegúrate de que el nuevo contenedor de PostgreSQL esté corriendo.
     con [docker ps -a] ver el contendor de base de datos por ejemplo: db4u_uifs1-geo
@@ -225,8 +112,6 @@ b => Eliminar la base de datos actual           -- Ok --
         docker exec -it db4geonode1 psql -U geonode -d geonode -c "DROP SCHEMA tiger CASCADE;"
         docker exec -it db4geonode1 psql -U geonode -d geonode -c "DROP SCHEMA tiger_data CASCADE;"
         docker exec -it db4geonode1 psql -U geonode -d geonode -c "DROP SCHEMA topology CASCADE;"
-
-
 
 
 
@@ -287,47 +172,41 @@ docker exec -it django4u_uifs1-geo python manage.py migrate
 
 ## Actualizar los LINK del server anterior
 docker exec -it django4u_uifs1-geo python manage.py migrate_baseurl --source-address=http://186.96.43.8:8087 --target-address=https://uifs.cimsur.unam.mx:8091
-docker exec -it django4u_uifs1-geo python manage.py migrate_baseurl --source-address=http://186.96.43.8:8080 --target-address=https://uifs.cimsur.unam.mx:8080
+
+docker exec -it django4u_uifs1-geo python manage.py migrate_baseurl --source-address=http://186.96.43.8:8080/geoserver --target-address=https://uifs.cimsur.unam.mx:8091/geoserver
+
+docker exec -it django4u_uifs1-geo python manage.py migrate_baseurl --source-address=http://186.96.43.8:8080/geoserver/wms --target-address=https://uifs.cimsur.unam.mx:8080/geoserver/wms
+
+
+
+* * * 
+
+
 docker exec -it django4u_uifs1-geo python manage.py updatelayers
 
 
 
 
-# Conocer la Version de GEONODE
-- Opción 1 - 
+* * * * *  URL para pruebas de funcionamiento * * * * * * * * 
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+https://uifs.cimsur.unam.mx:8091/geoserver/ows?service=WMS&request=GetCapabilities
+https://uifs.cimsur.unam.mx:8091/api/
+
+
+
+- Pruebas de bases de datos 
+    docker exec -it geonode_db psql -U geonode geonode
+
+- Pruebas de comandos administrativos / Entra al contenedor geonode:
     docker exec -it django4u_uifs1-geo bash
-    python3 -m pip show geonode
+        python manage.py check
+        python manage.py migrate --plan
 
-- Opción 2 - desde el contenedor
+        * Si no hay errores, la migración de Django está en orden.
+
+- borrando los archivos viejos estáticos
     docker exec -it django4u_uifs1-geo bash
-    python3 manage.py shell
-    import geonode
-    print(geonode.__version__)
+        python manage.py collectstatic --clear --noinput
 
-- Opción 3 - en la carpeta de instalación
-    cat requirements.txt | grep geonode
-
-
-
-
-
-
-
-
-
-
-
-
------------------------------------------------------------------------------------
------------------------------------------------------------------------------------
---------   C U I D A D O - ELIMINA VOLUMENES --- ----- ----- ----- ---- ---- ------
------------------------------------------------------------------------------------
-docker volume rm  u_uifs1-geo-backup-restore u_uifs1-geo-data u_uifs1-geo-dbbackups u_uifs1-geo-dbdata u_uifs1-geo-gsdatadir u_uifs1-geo-nginxcerts u_uifs1-geo-nginxconfd u_uifs1-geo-rabbitmq u_uifs1-geo-statics u_uifs1-geo-tmp
------------------------------------------------------------------------------------
------------------------------------------------------------------------------------
-
-
-
-
-
-
+- Si quieres ver exactamente de qué apps vienen los archivos duplicados, puedes usar:
+  python manage.py findstatic geonode/img/logo.png --verbosity 2
