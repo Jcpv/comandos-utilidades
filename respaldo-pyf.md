@@ -1,6 +1,10 @@
 ------------------2025 --- 09_Septiembre
+mysqldump --user=ojspyf  -p ojspyf21 > 2025_1103_1207_Ojs33011.sql
+sudo tar -cvf 2025_1103_1207_Ojs33011.tar ../index.php/
+sudo tar -cvf 2025_1103_1207_FilesOjs.tar ../FilesOjsPyf/
+
+------------------2025 --- 09_Septiembre
 mysqldump --user=ojspyf  -p ojspyf21 > 2025_0923_0900_Ojs33011.sql
-mysqldump --user=ojspyf  -p ojspyf21 > 2025_0923_0850_Ojs33011.sql
 sudo tar -cvf 2025_0923_0850_Ojs33011.tar ../index.php/
 sudo tar -cvf 2025_0923_0850_FilesOjs.tar ../FilesOjsPyf/
 
