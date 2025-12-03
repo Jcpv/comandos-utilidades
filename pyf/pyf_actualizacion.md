@@ -16,16 +16,10 @@ Si el archivo no existe (en OJS 3.4+)
 
 En OJS 3.4.x, algunos plugins se movieron.
 La nueva ruta puede ser:
-    lib/pkp/plugins/generic/usageStats/usageStats.xml
-
-o
     plugins/generic/usageStats/scheduledTasks.xml
 
-Comando 1:
+Comando:
     php tools/runScheduledTasks.php plugins/generic/usageStats/scheduledTasks.xml
-
-Comando 2 si no existe, este otro:
-    php tools/runScheduledTasks.php lib/pkp/plugins/generic/usageStats/usageStats.xml
 
 Verificar cuál existe con:
     find /var/www/html/pyf/ojs-3.4.0-0 -name "scheduledTasks.xml"
