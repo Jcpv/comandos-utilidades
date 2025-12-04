@@ -155,24 +155,24 @@ echo "Iniciando actualizaciones"
 echo "ver ojs 3.3.... <----"  
 #php ojs-3.3.0/tools/upgrade.php upgrade  * ESTA NO AVANZA MARCA ERROR
 php ojs-3.3.0-3/tools/upgrade.php upgrade 
-#php ojs-3.3.0-4/tools/upgrade.php upgrade ;
-#php ojs-3.3.0-5/tools/upgrade.php upgrade ;
-#php ojs-3.3.0-6/tools/upgrade.php upgrade 
-#php ojs-3.3.0-7/tools/upgrade.php upgrade &&
-#php ojs-3.3.0-8/tools/upgrade.php upgrade &&
-#php ojs-3.3.0-9/tools/upgrade.php upgrade &&
-#php ojs-3.3.0-10/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-11/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-12/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-13/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-14/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-15/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-16/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-17/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-18/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-19/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-20/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-21/tools/upgrade.php upgrade &&
+php ojs-3.3.0-4/tools/upgrade.php upgrade ;
+php ojs-3.3.0-5/tools/upgrade.php upgrade ;
+php ojs-3.3.0-6/tools/upgrade.php upgrade ;
+php ojs-3.3.0-7/tools/upgrade.php upgrade ;
+php ojs-3.3.0-8/tools/upgrade.php upgrade ;
+php ojs-3.3.0-9/tools/upgrade.php upgrade ;
+php ojs-3.3.0-10/tools/upgrade.php upgrade ;
+php ojs-3.3.0-11/tools/upgrade.php upgrade ;
+php ojs-3.3.0-12/tools/upgrade.php upgrade ;
+php ojs-3.3.0-13/tools/upgrade.php upgrade ;
+php ojs-3.3.0-14/tools/upgrade.php upgrade ;
+php ojs-3.3.0-15/tools/upgrade.php upgrade ;
+php ojs-3.3.0-16/tools/upgrade.php upgrade ;
+php ojs-3.3.0-17/tools/upgrade.php upgrade ;
+php ojs-3.3.0-18/tools/upgrade.php upgrade ;
+php ojs-3.3.0-19/tools/upgrade.php upgrade ;
+php ojs-3.3.0-20/tools/upgrade.php upgrade ;
+php ojs-3.3.0-21/tools/upgrade.php upgrade ;
 
 
 echo "Vaciando CACHE"
