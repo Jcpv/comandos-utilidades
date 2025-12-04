@@ -154,10 +154,10 @@ echo "=== Ajuste de permisos finalizado ==="
 echo "Iniciando actualizaciones"
 echo "ver ojs 3.3.... <----"  
 #php ojs-3.3.0/tools/upgrade.php upgrade  * ESTA NO AVANZA MARCA ERROR
-php ojs-3.3.0-3/tools/upgrade.php upgrade ;
-php ojs-3.3.0-4/tools/upgrade.php upgrade ;
-php ojs-3.3.0-5/tools/upgrade.php upgrade ;
-php ojs-3.3.0-6/tools/upgrade.php upgrade &&
+php ojs-3.3.0-3/tools/upgrade.php upgrade 
+#php ojs-3.3.0-4/tools/upgrade.php upgrade ;
+#php ojs-3.3.0-5/tools/upgrade.php upgrade ;
+#php ojs-3.3.0-6/tools/upgrade.php upgrade 
 #php ojs-3.3.0-7/tools/upgrade.php upgrade &&
 #php ojs-3.3.0-8/tools/upgrade.php upgrade &&
 #php ojs-3.3.0-9/tools/upgrade.php upgrade &&
