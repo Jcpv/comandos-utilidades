@@ -162,8 +162,8 @@ php ojs-3.3.0-7/tools/upgrade.php upgrade &&
 php ojs-3.3.0-8/tools/upgrade.php upgrade &&
 php ojs-3.3.0-9/tools/upgrade.php upgrade &&
 php ojs-3.3.0-10/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-11/tools/upgrade.php upgrade &&
-##php ojs-3.3.0-12/tools/upgrade.php upgrade &&
+php ojs-3.3.0-11/tools/upgrade.php upgrade &&
+php ojs-3.3.0-12/tools/upgrade.php upgrade &&
 ##php ojs-3.3.0-13/tools/upgrade.php upgrade &&
 ##php ojs-3.3.0-14/tools/upgrade.php upgrade &&
 ##php ojs-3.3.0-15/tools/upgrade.php upgrade &&
